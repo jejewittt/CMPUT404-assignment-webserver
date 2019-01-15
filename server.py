@@ -43,6 +43,10 @@ class MyWebServer(socketserver.BaseRequestHandler):
         index_deeper = open('www/deep/index.html','r')
         deeper_css = open('www/deep/deep.css','r')
 
+        index_base_hardcode = open('www/hardcode/index.html','r')
+        index_css_hardcode = open('www/hardcode/deep.css','r')
+
+
         test = 'www'
 
         self.data = self.request.recv(1024).strip()
@@ -52,7 +56,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
         # print("\\index.html")
         if split[0]=="GET":
 
-            test2 = open(test+split[1],'r') 
+            # test2 = open(test+split[1],'r') 
 
             if split[1] == "/index.html"or split[1] == "/":
                 # print("valid response",split[1])
@@ -70,6 +74,12 @@ class MyWebServer(socketserver.BaseRequestHandler):
                 good = request_200_css+deeper_css.read()
                 # print(good)
                 self.request.sendall(bytearray(good,'utf-8'))
+            elif split[1] == "/hardcode/index.html" or split[1] == "/hardcode/": 
+                 good = request_200_html+index_base_hardcode.read()
+                 self.request.sendall(bytearray(good,'utf-8'))
+            elif split[1] == "/hardcode/deep.css": 
+                 good = request_200_css+index_css_hardcode.read()
+                 self.request.sendall(bytearray(good,'utf-8'))
             else:
                 # print("error\n\n")
                 self.request.sendall(bytearray(error_404,'utf-8'))
