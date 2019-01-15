@@ -26,13 +26,56 @@ import socketserver
 
 # try: curl -v -X GET http://127.0.0.1:8080/
 
+#https://stackoverflow.com/questions/41852380/how-to-abort-a-python-script-and-return-a-404-error
+
 
 class MyWebServer(socketserver.BaseRequestHandler):
     
     def handle(self):
+        error_404 = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n <html><head></head><body><h1>404 Not Found</h1></body></html>"
+        error_405 = "HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/html\r\n\r\n <html><head></head><body><h1>405 Method Not Allowed</h1></body></html>"
+        request_200_html = "HTTP/1.1 200 OK \r\nContent-Type: text/html\r\n\r\n"
+        request_200_css = "HTTP/1.1 200 OK \r\nContent-Type: text/css\r\n\r\n"
+        
+        index_base = open('www/index.html','r')
+        base_css = open('www/base.css')
+
+        index_deeper = open('www/deep/index.html','r')
+        deeper_css = open('www/deep/deep.css','r')
+
+
+
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
-        self.request.sendall(bytearray("OK",'utf-8'))
+
+        split = self.data.decode("utf-8").split()
+        # print("\\index.html")
+        if split[0]=="GET":
+            if split[1] == "/index.html"or split[1] == "/":
+                # print("valid response",split[1])
+                good = request_200_html+index_base.read()
+                self.request.sendall(bytearray(good,'utf-8'))
+            elif split[1] == "/base.css":
+                good = request_200_css+base_css.read()
+                # print(good)
+                self.request.sendall(bytearray(good,'utf-8'))
+            elif split[1] == "/deep/index.html":
+                good = request_200_html+index_deeper.read()
+                # print(good)
+                self.request.sendall(bytearray(good,'utf-8'))
+            elif split[1] == "/deep/deep.css": 
+                good = request_200_css+deeper_css.read()
+                # print(good)
+                self.request.sendall(bytearray(good,'utf-8'))
+            else:
+                print("error\n\n")
+                self.request.sendall(bytearray(error_404,'utf-8'))
+        else:
+            self.request.sendall(bytearray(error_405,'utf-8'))
+            #print("error:", split) 
+        # print(split)
+
+        
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
