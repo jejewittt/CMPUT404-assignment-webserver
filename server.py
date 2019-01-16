@@ -37,16 +37,14 @@ class MyWebServer(socketserver.BaseRequestHandler):
         request_200_html = "HTTP/1.1 200 OK \r\nContent-Type: text/html\r\n\r\n"
         request_200_css = "HTTP/1.1 200 OK \r\nContent-Type: text/css\r\n\r\n"
         
-        index_base = open('www/index.html','r')
-        base_css = open('www/base.css')
+        # index_base = open('www/index.html','r')
+        # base_css = open('www/base.css')
 
-        index_deeper = open('www/deep/index.html','r')
-        deeper_css = open('www/deep/deep.css','r')
+        # index_deeper = open('www/deep/index.html','r')
+        # deeper_css = open('www/deep/deep.css','r')
 
-        index_base_hardcode = open('www/hardcode/index.html','r')
-        index_css_hardcode = open('www/hardcode/deep.css','r')
-
-
+        # index_base_hardcode = open('www/hardcode/index.html','r')
+        # index_css_hardcode = open('www/hardcode/deep.css','r')
 
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
@@ -58,24 +56,20 @@ class MyWebServer(socketserver.BaseRequestHandler):
             path = 'www'+split[1]
 
 
-
-
-
             if os.path.isfile(path):
-                print(split[1][-1:])
+                # print(split[1][-1:])
                 if split[1][-1:] == "/":
                     path = path + 'index.html'
-                    good = request_200_html+index_base.read()
+                    good = request_200_html+open(path,'r').read()
                     self.request.sendall(bytearray(good,'utf-8'))
                 else:
                     # print('\n HEY: ', split[1][-4:] )
                     if split[1][-4:] == 'html':
-                        good = request_200_html+index_base.read()
+                        good = request_200_html+open(path,'r').read()
                         self.request.sendall(bytearray(good,'utf-8'))
                     elif split[1][-3:] == 'css':
-                        good = request_200_css+index_base.read()
-
-                        print(good)
+                        good = request_200_css+open(path,'r').read()
+                        # print(good)
                         self.request.sendall(bytearray(good,'utf-8'))
                     else:
                         self.request.sendall(bytearray(error_404,'utf-8'))
@@ -83,13 +77,12 @@ class MyWebServer(socketserver.BaseRequestHandler):
                 #     good = request_200_html+index_base.read()
                 #     self.request.sendall(bytearray(good,'utf-8'))
             elif os.path.isfile(path+'index.html'):
-                print(split[1][-1:])
+                # print(split[1][-1:])
                 if split[1][-1:] == "/":
                     path = path + 'index.html'
-                    good = request_200_html+index_base.read()
+                    # print(path)
+                    good = request_200_html+open(path,'r').read()
                     self.request.sendall(bytearray(good,'utf-8'))
-
-
             else:
                 self.request.sendall(bytearray(error_404,'utf-8'))
 
