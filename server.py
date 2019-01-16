@@ -37,15 +37,6 @@ class MyWebServer(socketserver.BaseRequestHandler):
         request_200_html = "HTTP/1.1 200 OK \r\nContent-Type: text/html\r\n\r\n"
         request_200_css = "HTTP/1.1 200 OK \r\nContent-Type: text/css\r\n\r\n"
         
-        # index_base = open('www/index.html','r')
-        # base_css = open('www/base.css')
-
-        # index_deeper = open('www/deep/index.html','r')
-        # deeper_css = open('www/deep/deep.css','r')
-
-        # index_base_hardcode = open('www/hardcode/index.html','r')
-        # index_css_hardcode = open('www/hardcode/deep.css','r')
-
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
 
@@ -85,41 +76,6 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     self.request.sendall(bytearray(good,'utf-8'))
             else:
                 self.request.sendall(bytearray(error_404,'utf-8'))
-
-
-
-
-        #     if split[1] == "/index.html"or split[1] == "/":
-        #         # print("valid response",split[1])
-        #         good = request_200_html+index_base.read()
-        #         self.request.sendall(bytearray(good,'utf-8'))
-        #     elif split[1] == "/base.css":
-        #         good = request_200_css+base_css.read()
-        #         # print(good)
-        #         self.request.sendall(bytearray(good,'utf-8'))
-        #     elif split[1] == "/deep/index.html" or split[1] == "/deep/":
-        #         good = request_200_html+index_deeper.read()
-        #         # print(good)
-        #         self.request.sendall(bytearray(good,'utf-8'))
-        #     elif split[1] == "/deep/deep.css": 
-        #         good = request_200_css+deeper_css.read()
-        #         # print(good)
-        #         self.request.sendall(bytearray(good,'utf-8'))
-        #     elif split[1] == "/hardcode/index.html" or split[1] == "/hardcode/": 
-        #          good = request_200_html+index_base_hardcode.read()
-        #          self.request.sendall(bytearray(good,'utf-8'))
-        #     elif split[1] == "/hardcode/deep.css": 
-        #          good = request_200_css+index_css_hardcode.read()
-        #          self.request.sendall(bytearray(good,'utf-8'))
-        #     else:
-        #         # print("error\n\n")
-        #         self.request.sendall(bytearray(error_404,'utf-8'))
-        # else:
-        #     self.request.sendall(bytearray(error_405,'utf-8'))
-            #print("error:", split) 
-        # print(split)
-
-        
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
