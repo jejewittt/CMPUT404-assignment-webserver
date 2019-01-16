@@ -66,14 +66,12 @@ class MyWebServer(socketserver.BaseRequestHandler):
                         self.request.sendall(bytearray(good,'utf-8'))
                     else:
                     	#redirect if / is missing
-                    	print("e")
                     	if os.path.isfile(path + '/index.html'):
                     		# ***change to redirect
                     		# this should work because it checks if there is 
                     		#the file in the directory - it is likning
                     		#to deep - but it the abs path isnt there it wont
                     		#go into the if statement
-                    		print("it should be here ")
                     		good = request_301+ path + "/ \r\n\r\n"+open(path+'/index.html','r').read()
                     		self.request.sendall(bytearray(good,'utf-8'))
                     	else:
