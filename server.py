@@ -88,6 +88,8 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     self.request.sendall(bytearray(good,'utf-8'))
             else:
                 self.request.sendall(bytearray(error_404,'utf-8'))
+        else:
+        	self.request.sendall(bytearray(error_405,'utf-8'))
 
 
 if __name__ == "__main__":
