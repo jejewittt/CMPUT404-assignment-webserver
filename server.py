@@ -1,6 +1,6 @@
 #  coding: utf-8 
 import socketserver
-
+import os.path
 # Copyright 2013 Abram Hindle, Eddie Antonio Santos
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,6 @@ class MyWebServer(socketserver.BaseRequestHandler):
         index_css_hardcode = open('www/hardcode/deep.css','r')
 
 
-        test = 'www'
 
         self.data = self.request.recv(1024).strip()
         print ("Got a request of: %s\n" % self.data)
@@ -55,36 +54,75 @@ class MyWebServer(socketserver.BaseRequestHandler):
         split = self.data.decode("utf-8").split()
         # print("\\index.html")
         if split[0]=="GET":
+            # print(split[1][-1:])
+            path = 'www'+split[1]
 
-            # test2 = open(test+split[1],'r') 
 
-            if split[1] == "/index.html"or split[1] == "/":
-                # print("valid response",split[1])
-                good = request_200_html+index_base.read()
-                self.request.sendall(bytearray(good,'utf-8'))
-            elif split[1] == "/base.css":
-                good = request_200_css+base_css.read()
-                # print(good)
-                self.request.sendall(bytearray(good,'utf-8'))
-            elif split[1] == "/deep/index.html" or split[1] == "/deep/":
-                good = request_200_html+index_deeper.read()
-                # print(good)
-                self.request.sendall(bytearray(good,'utf-8'))
-            elif split[1] == "/deep/deep.css": 
-                good = request_200_css+deeper_css.read()
-                # print(good)
-                self.request.sendall(bytearray(good,'utf-8'))
-            elif split[1] == "/hardcode/index.html" or split[1] == "/hardcode/": 
-                 good = request_200_html+index_base_hardcode.read()
-                 self.request.sendall(bytearray(good,'utf-8'))
-            elif split[1] == "/hardcode/deep.css": 
-                 good = request_200_css+index_css_hardcode.read()
-                 self.request.sendall(bytearray(good,'utf-8'))
+
+
+
+            if os.path.isfile(path):
+                print(split[1][-1:])
+                if split[1][-1:] == "/":
+                    path = path + 'index.html'
+                    good = request_200_html+index_base.read()
+                    self.request.sendall(bytearray(good,'utf-8'))
+                else:
+                    # print('\n HEY: ', split[1][-4:] )
+                    if split[1][-4:] == 'html':
+                        good = request_200_html+index_base.read()
+                        self.request.sendall(bytearray(good,'utf-8'))
+                    elif split[1][-3:] == 'css':
+                        good = request_200_css+index_base.read()
+
+                        print(good)
+                        self.request.sendall(bytearray(good,'utf-8'))
+                    else:
+                        self.request.sendall(bytearray(error_404,'utf-8'))
+                # else:
+                #     good = request_200_html+index_base.read()
+                #     self.request.sendall(bytearray(good,'utf-8'))
+            elif os.path.isfile(path+'index.html'):
+                print(split[1][-1:])
+                if split[1][-1:] == "/":
+                    path = path + 'index.html'
+                    good = request_200_html+index_base.read()
+                    self.request.sendall(bytearray(good,'utf-8'))
+
+
             else:
-                # print("error\n\n")
                 self.request.sendall(bytearray(error_404,'utf-8'))
-        else:
-            self.request.sendall(bytearray(error_405,'utf-8'))
+
+
+
+
+        #     if split[1] == "/index.html"or split[1] == "/":
+        #         # print("valid response",split[1])
+        #         good = request_200_html+index_base.read()
+        #         self.request.sendall(bytearray(good,'utf-8'))
+        #     elif split[1] == "/base.css":
+        #         good = request_200_css+base_css.read()
+        #         # print(good)
+        #         self.request.sendall(bytearray(good,'utf-8'))
+        #     elif split[1] == "/deep/index.html" or split[1] == "/deep/":
+        #         good = request_200_html+index_deeper.read()
+        #         # print(good)
+        #         self.request.sendall(bytearray(good,'utf-8'))
+        #     elif split[1] == "/deep/deep.css": 
+        #         good = request_200_css+deeper_css.read()
+        #         # print(good)
+        #         self.request.sendall(bytearray(good,'utf-8'))
+        #     elif split[1] == "/hardcode/index.html" or split[1] == "/hardcode/": 
+        #          good = request_200_html+index_base_hardcode.read()
+        #          self.request.sendall(bytearray(good,'utf-8'))
+        #     elif split[1] == "/hardcode/deep.css": 
+        #          good = request_200_css+index_css_hardcode.read()
+        #          self.request.sendall(bytearray(good,'utf-8'))
+        #     else:
+        #         # print("error\n\n")
+        #         self.request.sendall(bytearray(error_404,'utf-8'))
+        # else:
+        #     self.request.sendall(bytearray(error_405,'utf-8'))
             #print("error:", split) 
         # print(split)
 
